@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Contact Manager</title>
+  <link rel="stylesheet" href="stylesheets/contact_manager.css" />
+  <script src="javascripts/jquery.js"></script>
+  <script src="javascripts/handlebars.js"></script>
+  <script src="javascripts/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+  <!-- <script>
+      function confirmDelete() {
+    // Display confirmation dialog
+    var confirmation = confirm("Are you sure you want to delete this item?");
+    
+    // If user clicks "OK" (true), proceed with deletion
+    if (confirmation) {
+      alert("Item deleted successfully!");
+      // Add your deletion logic here
+    } else {
+      // If user clicks "Cancel" (false), do nothing
+      alert("Deletion canceled!");
+    }
+  }
+  </script> -->
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Contact Manager</h1>
+      <p>Using Backbone.js, Localstorage, RequireJS, Handlebars and Bootstrap</p>
+    </div>
+    <div class="add-contact-header">
+      <a href="#contacts/new" class="add-contact">Add Contact</a>
+      <div>
+        <input type="text" class="contact-name-search" placeholder="Search">
+      </div>
+    </div>
+
+    <!-- <button onclick="confirmDelete()">Delete</button> -->
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="main-container">
+          <div class="row well">
+            <div class="style">
+              <a href="" class="back-to-all-contacts">Back to all contacts</a>
+              <ul class="contacts-container">
+              </ul>
+              <div class="homepage-no-contacts">
+                <div class="empty-contacts-placeholder">
+                  <div class="no-contacts">
+                    <h3 >There are no contacts.</h3>
+                    <a href="#contacts/new" class="add-contact">Add Contact</a>
+                  </div>
+                  <div class="empty-search-contacts-placeholder"></div>
+                </div>
+              </div>
+              <div class="create-contact">
+                <h2>Create Contact</h2>
+                <form class="contact-form">
+                  <div>
+                    <label class="name-label">Full Name:</label>
+                    <div class="name-input-bar">
+                      <input type="text" class="contact-name-input">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="email-label">Email address:</label>
+                    <div class="email-input-bar">
+                      <input type="text" class="email-input">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="phone-label">Telephone number:</label>
+                    <div class="phone-input-bar">
+                      <input type="text" class="phone-input">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="tag-label">Tag:</label>
+                    <div class="tag-input-bar">
+                      <input type="text" class="tag-input">
+                    </div>
+                  </div>
+                  <div class="buttons">
+                    <div>
+                      <button type="submit" class="new-contact-submit-button">Submit</button>
+                    </div>
+                    <div>
+                      <button class="new-contact-cancel-button">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="edit-contact">
+                <h2>Edit Contact</h2>
+                  <form class="edit-contact-form">
+                    <div class="input-fields">
+                      <label class="full_name-label">Full Name:</label>
+                      <div class="name-input-bar">
+                        <input type="text" class="edit-name-input">
+                      </div>
+                      <label class="email-label">Email address:</label>
+                      <div class="email-input-bar">
+                        <input type="text" class="edit-email-input">
+                      </div>
+                      <label class="phone_number-label">Telephone number:</label>
+                      <div class="phone-input-bar">
+                        <input type="text" class="edit-phone-input">
+                      </div>
+                      <label class="tag-label">Tag:</label>
+                      <div class="tag-input-bar">
+                        <input type="text" class="edit-tag-input">
+                      </div>
+                    </div>
+                    <div class="edit-buttons">
+                      <div>
+                        <button type="submit" class="edit-submit-button">Submit</button>
+                      </div>
+                      <div>
+                        <button class="edit-cancel-button">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Developed by <a href="http://www.devsaran.com">Devsaran.com</a> and <a href="http://www.Launchschool.com">Launch School</a>.</p>
+      </div>
+    </div>
+  </main>
+  <script id="contacts-template" type="text/x-handlebars-template">
+    {{#each contacts}}
+    <li class="contact">
+      <h2>{{full_name}}</h2>
+      <p><strong>Phone Number:</strong></p>
+      <p>{{phone_number}}</p>
+      <p><strong>Email:</strong></p>
+      <p>{{email}}</p>
+      <p class="tag-display"><strong>Tags:</strong>
+        <br>
+        {{#each tags}}
+        <a href="">{{this}}</a>
+        {{/each}}
+      </p>
+
+    </li>
+    <a href="#contacts/edit/{{id}}" class="edit-button">Edit</a>
+    <a href="#contacts/delete/{{id}}" class="delete-button">Delete</a>
+    {{/each}}
+  </script>
+</body>
+</html>

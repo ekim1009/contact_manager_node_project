@@ -1,0 +1,51 @@
+.homepage-no-contacts {
+  display: none;
+}
+
+.create-contact {
+  display: none;
+}
+
+.edit-contact {
+  display: none;
+}
+
+.btn-cancel {
+  background-color: #ccc;
+}
+
+.btn-submit {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.back-to-all-contacts {
+  display: none;
+}
+
+div {
+  display: block;
+  unicode-bidi: isolate;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: #333;
+}
+
+.col-xs-12 {
+  float: left;
+}
+
+.glyphicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
