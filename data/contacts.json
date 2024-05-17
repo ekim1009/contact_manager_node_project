@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "full_name": "Esther",
+    "phone_number": "1231231231",
+    "email": "trish@yahoo.net",
+    "tags": [
+      "student"
+    ],
+    "id": 2
+  },
+  {
+    "full_name": "Cho",
+    "phone_number": "1231231231",
+    "email": "trish@yahoo.net",
+    "tags": [
+      "student"
+    ],
+    "id": 3
+  },
+  {
+    "full_name": "Lee",
+    "phone_number": "1231231231",
+    "email": "trish@yahoo.net",
+    "tags": [
+      "student"
+    ],
+    "id": 4
+  },
+  {
+    "full_name": "Trish",
+    "phone_number": "1231231231",
+    "email": "trish@yahoo.net",
+    "tags": [
+      "nurse"
+    ],
+    "id": 5
+  }
+]

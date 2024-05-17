@@ -62,17 +62,24 @@ storing contacts:
 
 */
 
-// const { query } = require("express");
-
 document.addEventListener('DOMContentLoaded', event => {
   class ContactManager {
     constructor () {
+      this.currentlyEditingContactId = null;
+      this.init();
+      this.attachListeners();
+    }
+
+    init() {
       document.querySelector('.homepage-no-contacts').style.display = 'block';
       this.getAllContacts();
+    }
+
+    attachListeners() {
       let addButtons = document.querySelectorAll('.add-contact');
       addButtons.forEach(ele => ele.addEventListener('click', e => {this.displayButton(e)}));
       document.querySelector('.new-contact-submit-button').addEventListener('click', e => {this.addCreateContact(e)});
-      document.querySelector('.new-contact-cancel-button').addEventListener('click', e => {this.getAllContacts();})
+      document.querySelector('.new-contact-cancel-button').addEventListener('click', e => {this.getAllContacts()});
 
       let name = [];
       document.querySelector('.contact-name-search').addEventListener('keydown', event => {
@@ -98,12 +105,9 @@ document.addEventListener('DOMContentLoaded', event => {
           this.editContactForm(id);
 
           document.querySelector('.edit-submit-button').addEventListener('click', event => {
-          event.preventDefault();
-   
-          this.submitEdit(id);
-  
-          // console.log(event.target, id)
-        });
+            event.preventDefault();
+            this.submitEdit(this.currentlyEditingContactId);
+          });
         }
       });
     }
@@ -118,7 +122,6 @@ document.addEventListener('DOMContentLoaded', event => {
 
           let filteredContacts = contacts.filter(obj => {
             let fullName = obj['full_name'].split(' ');
-            console.log(fullName);
             if (fullName[0].startsWith(name.charAt(0).toUpperCase() + name.substring(1)) || fullName[fullName.length - 1].startsWith(name.charAt(0).toUpperCase() + name.substring(1))) {
               return obj;
             }
@@ -173,7 +176,7 @@ document.addEventListener('DOMContentLoaded', event => {
       full_name = full_name.charAt(0).toUpperCase() + full_name.slice(1);
       let email = document.querySelector('.email-input').value.trim();
       let phone_number = document.querySelector('.phone-input').value.trim();
-      let tags = document.querySelector('.tag-input').value//.split(',').map(str => str.trim());
+      let tags = document.querySelector('.tag-input').value;
       
       try {
         this.validName(full_name);
@@ -212,8 +215,7 @@ document.addEventListener('DOMContentLoaded', event => {
       return fetch('http://localhost:3000/api/contacts')
         .then(response => response.json())
         .then(json => {
-          console.log(json)
-          json.forEach(ele => console.log(ele.tags));
+          // json.forEach(ele => console.log(ele.tags));
           if (json.length === 0) {
             document.querySelector('.homepage-no-contacts').style.display = 'block';
             document.querySelector('.contacts-container').style.display = 'none';
@@ -231,9 +233,10 @@ document.addEventListener('DOMContentLoaded', event => {
                 this.getContactsWithTag(tag);
               });
             };    
-            return json;
+            // return json;
           };
-        });
+        })
+        .catch(error => console.log(error));
 
 
       function displayAllContacts(contacts) {
@@ -250,13 +253,13 @@ document.addEventListener('DOMContentLoaded', event => {
           document.querySelector('.contacts-container').innerHTML = html;
           document.querySelector('.homepage-no-contacts').style.display = 'none';
         };
-        console.log(data)
       };
     }
 
     editContactForm(id) {
       let inputFields = document.querySelectorAll('[class$="input"]');
       this.hideElements('edit-contact');
+      this.currentlyEditingContactId = id; 
 
       fetch('http://localhost:3000/api/contacts/' + id)
         .then(response => response.json())
@@ -281,25 +284,32 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     submitEdit(id) {
-      function collectUpdatedContactInfo() {
-        let full_name = document.querySelector('.edit-name-input').value.trim();
-        let email = document.querySelector('.edit-email-input').value.trim();
-        let phone_number = document.querySelector('.edit-phone-input').value.trim();
-        let tags = document.querySelector('.edit-tag-input').value.trim();
-
-        this.validName(full_name);
-        this.validEmail(email);
-        this.validPhone(phone_number);
-        this.validTag(tags);
-
-        return {id, full_name, email, phone_number, tags};
-      };
-
-      let updatedContact = collectUpdatedContactInfo.call(this);
-
+      try {
+        let updatedContact = this.collectUpdatedContactInfo(id);
+        // console.log(updatedContact)
+        this.updateContact(id, updatedContact);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+    
+    collectUpdatedContactInfo(id) {
+      let full_name = document.querySelector('.edit-name-input').value.trim();
+      let email = document.querySelector('.edit-email-input').value.trim();
+      let phone_number = document.querySelector('.edit-phone-input').value.trim();
+      let tags = document.querySelector('.edit-tag-input').value.trim();
+    
+      this.validName(full_name);
+      this.validEmail(email);
+      this.validPhone(phone_number);
+      tags = this.validTag(tags);
+      return { id, full_name, email, phone_number, tags };
+    }
+    
+    updateContact(id, updatedContact) {
       fetch('http://localhost:3000/api/contacts/' + id, {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedContact),
       })
       .then(response => {
@@ -332,7 +342,6 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     hideElements(node) {
-      console.log(node);
       let nodes = document.querySelector('.style').children;
       for (let i = 0; i < nodes.length; i += 1) {
         let tag = nodes[i].getAttribute('class');
@@ -352,11 +361,13 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     validEmail(email) {
+      let validSuffix = email.split('.');
+
       if (!email.includes('@')) {
         throw new Error(`Please include an '@' in the email address. '${email}' is missing an '@'.`);
       } else if (email[email.length - 1] === '@') {
         throw new Error(`Please enter a part following '@'.  '${email}' is incomplete.`);
-      } else if (email.slice(email.length - 4) !== '.com') {
+      } else if (validSuffix.length < 2 || validSuffix[validSuffix.length - 1] === '') {
         throw new Error('Please enter a valid email.');
       };
     }
